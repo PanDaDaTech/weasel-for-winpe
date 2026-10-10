@@ -75,6 +75,9 @@ bool UIStyleSettings::GetPresetColorSchemes(
   RimeConfigIterator preset = {0};
   if (!rime->config_begin_map(&preset, &config, "preset_color_schemes"))
     return false;
+  // The dark scheme is paired with the light one and switched automatically by
+  // the system theme; hide it so the list shows a single entry.
+  const std::string dark_scheme = GetDarkColorScheme();
   while (rime->config_next(&preset)) {
     std::string name_key(preset.path);
     name_key += "/name";
@@ -83,6 +86,8 @@ bool UIStyleSettings::GetPresetColorSchemes(
     author_key += "/author";
     const char* author = rime->config_get_cstring(&config, author_key.c_str());
     if (!name)
+      continue;
+    if (!dark_scheme.empty() && dark_scheme == preset.key)
       continue;
     ColorSchemeInfo info;
     info.color_scheme_id = preset.key;

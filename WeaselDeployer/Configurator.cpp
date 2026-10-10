@@ -15,17 +15,8 @@
 #pragma warning(default : 4005)
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include "WeaselDeployer.h"
-
-static void CreateFileIfNotExist(std::string filename) {
-  std::filesystem::path file_path = WeaselUserDataPath() / u8tow(filename);
-  DWORD dwAttrib = GetFileAttributes(file_path.c_str());
-  if (!(INVALID_FILE_ATTRIBUTES != dwAttrib &&
-        0 == (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
-    std::wofstream o(file_path.c_str(), std::ios::app);
-    o.close();
-  }
-}
 
 // Seed default.custom.yaml with the bundled input schemes so that a fresh
 // deployment (e.g. a Windows PE image) enables only Simplified pinyin and
@@ -48,9 +39,32 @@ static void CreateDefaultCustomSettings() {
   o << "    - schema: wubi\n";
 }
 
+// Force the bundled Win11 theme, replacing any pre-existing user skin (e.g. a
+// third-party weasel.custom.yaml) that would otherwise override it. Once the
+// user profile already targets the Win11 scheme it is left untouched.
+static void EnsureWeaselCustomSettings() {
+  const std::filesystem::path file_path =
+      WeaselUserDataPath() / L"weasel.custom.yaml";
+  std::string content;
+  {
+    std::ifstream in(file_path, std::ios::binary);
+    content.assign(std::istreambuf_iterator<char>(in),
+                   std::istreambuf_iterator<char>());
+  }
+  if (content.find("win11light") != std::string::npos)
+    return;
+  std::ofstream o(file_path, std::ios::trunc);
+  o << "# Weasel style overrides\n";
+  o << "# encoding: utf-8\n";
+  o << "\n";
+  o << "patch:\n";
+  o << "  style/color_scheme: win11light\n";
+  o << "  style/color_scheme_dark: win11dark\n";
+}
+
 Configurator::Configurator() {
   CreateDefaultCustomSettings();
-  CreateFileIfNotExist("weasel.custom.yaml");
+  EnsureWeaselCustomSettings();
 }
 
 void Configurator::Initialize() {
