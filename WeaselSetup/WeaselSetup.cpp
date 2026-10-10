@@ -5,6 +5,7 @@
 
 #include "resource.h"
 #include "WeaselUtility.h"
+#include "InstallOptionsDlg.h"
 #include <thread>
 
 #include <ShellScalingApi.h>

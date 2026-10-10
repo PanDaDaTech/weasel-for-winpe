@@ -10,6 +10,7 @@
 
 Unicode true
 ManifestDPIAware true
+SetFont "Microsoft Yahei UI" 9
 
 ;--------------------------------
 ; General
@@ -138,8 +139,6 @@ Function RimeUserDirPageLeave
 FunctionEnd
 
 Function .onInit
-  SetFont "Microsoft Yahei UI" 9
-
   ; Silent install keeps the default user directory and skips the page.
   ${IfNot} ${Silent}
     ExpandEnvStrings $RimeUserDir "%APPDATA%\Rime"
