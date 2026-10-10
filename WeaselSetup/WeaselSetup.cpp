@@ -7,8 +7,6 @@
 #include "WeaselUtility.h"
 #include <thread>
 
-#include "InstallOptionsDlg.h"
-
 #include <ShellScalingApi.h>
 #pragma comment(lib, "Shcore.lib")
 CAppModule _Module;
@@ -55,9 +53,10 @@ static std::wstring install_dir() {
 }
 
 static int CustomInstall(bool installing) {
-  std::wstring profile = L"hans";
-  bool silent = false;
+  const std::wstring profile = L"hans";
+  const bool silent = true;
   std::wstring user_dir;
+  (void)installing;
 
   const WCHAR KEY[] = L"Software\\Rime\\Weasel";
   HKEY hKey;
@@ -66,44 +65,16 @@ static int CustomInstall(bool installing) {
     WCHAR value[MAX_PATH];
     DWORD len = sizeof(value);
     DWORD type = 0;
-    DWORD data = 0;
     ret =
         RegQueryValueEx(hKey, L"RimeUserDir", NULL, &type, (LPBYTE)value, &len);
     if (ret == ERROR_SUCCESS && type == REG_SZ) {
       user_dir = value;
     }
-    len = sizeof(value);
-    ret = RegQueryValueEx(hKey, L"Profile", NULL, &type, (LPBYTE)value, &len);
-    if (ret == ERROR_SUCCESS && type == REG_SZ && value[0] != L'\0') {
-      profile = value;
-      if (installing)
-        silent = true;
-    } else {
-      len = sizeof(data);
-      ret = RegQueryValueEx(hKey, L"Hant", NULL, &type, (LPBYTE)&data, &len);
-      if (ret == ERROR_SUCCESS && type == REG_DWORD) {
-        profile = (data != 0) ? L"hant" : L"hans";
-        if (installing)
-          silent = true;
-      }
-    }
     RegCloseKey(hKey);
   }
+  // The Rime user directory is chosen in the installer, so installation is
+  // silent here and never prompts for it.
   bool _has_installed = has_installed();
-  if (!silent) {
-    InstallOptionsDialog dlg;
-    dlg.installed = _has_installed;
-    dlg.profile = profile;
-    dlg.user_dir = user_dir;
-    if (IDOK != dlg.DoModal()) {
-      if (!installing)
-        return 1;  // aborted by user
-    } else {
-      profile = dlg.profile;
-      user_dir = dlg.user_dir;
-      _has_installed = dlg.installed;
-    }
-  }
   if (!_has_installed)
     if (0 != install(profile, silent))
       return 1;
@@ -171,28 +142,18 @@ static int Run(LPTSTR lpCmdLine) {
                    sizeof(msg) / sizeof(TCHAR))) {
       MessageBox(NULL, msg, L"WeaselSetup", MB_ICONINFORMATION | MB_OK);
     } else {
-      MessageBox(
-          NULL,
-          L"Usage: WeaselSetup.exe [options]\n"
-          L"/? or /help    - Show this help message\n"
-          L"/u             - Uninstall Weasel\n"
-          L"/i             - Install Weasel\n"
-          L"/s             - Install Weasel (Simplified Chinese)\n"
-          L"/t             - Install Weasel (Traditional Chinese)\n"
-          L"/hk            - Install Weasel (Traditional Chinese, Hong Kong)\n"
-          L"/mc            - Install Weasel (Traditional Chinese, Macao)\n"
-          L"/sg            - Install Weasel (Simplified Chinese, Singapore)\n"
-          L"/ls            - Set Weasel language to Simplified Chinese\n"
-          L"/lt            - Set Weasel language to Traditional Chinese\n"
-          L"/le            - Set Weasel language to English\n"
-          L"/eu            - Enable automatic update check\n"
-          L"/du            - Disable automatic update check\n"
-          L"/toggleime     - Toggle IME on open/close(ctrl+space)\n"
-          L"/toggleascii   - Toggle ASCII on open/close(ctrl+space)\n"
-          L"/testing       - Set update channel to testing\n"
-          L"/release       - Set update channel to release\n"
-          L"/userdir:<dir> - Set user directory\n",
-          L"WeaselSetup", MB_ICONINFORMATION | MB_OK);
+      MessageBox(NULL,
+                 L"Usage: WeaselSetup.exe [options]\n"
+                 L"/? or /help    - Show this help message\n"
+                 L"/u             - Uninstall Weasel\n"
+                 L"/i             - Install Weasel\n"
+                 L"/s             - Install Weasel (Simplified Chinese)\n"
+                 L"/ls            - Set Weasel language to Simplified Chinese\n"
+                 L"/le            - Set Weasel language to English\n"
+                 L"/toggleime     - Toggle IME on open/close(ctrl+space)\n"
+                 L"/toggleascii   - Toggle ASCII on open/close(ctrl+space)\n"
+                 L"/userdir:<dir> - Set user directory\n",
+                 L"WeaselSetup", MB_ICONINFORMATION | MB_OK);
     }
     return 0;
   }
@@ -212,21 +173,9 @@ static int Run(LPTSTR lpCmdLine) {
   if (!wcscmp(L"/ls", lpCmdLine)) {
     return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
                           L"Language", L"chs", REG_SZ);
-  } else if (!wcscmp(L"/lt", lpCmdLine)) {
-    return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
-                          L"Language", L"cht", REG_SZ);
   } else if (!wcscmp(L"/le", lpCmdLine)) {
     return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
                           L"Language", L"eng", REG_SZ);
-  }
-
-  if (!wcscmp(L"/eu", lpCmdLine)) {
-    return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel\\Updates",
-                          L"CheckForUpdates", L"1", REG_SZ);
-  }
-  if (!wcscmp(L"/du", lpCmdLine)) {
-    return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel\\Updates",
-                          L"CheckForUpdates", L"0", REG_SZ);
   }
 
   if (!wcscmp(L"/toggleime", lpCmdLine)) {
@@ -237,15 +186,6 @@ static int Run(LPTSTR lpCmdLine) {
     return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
                           L"ToggleImeOnOpenClose", L"no", REG_SZ);
   }
-  if (!wcscmp(L"/testing", lpCmdLine)) {
-    return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
-                          L"UpdateChannel", L"testing", REG_SZ);
-  }
-  if (!wcscmp(L"/release", lpCmdLine)) {
-    return SetRegKeyValue(HKEY_CURRENT_USER, L"Software\\Rime\\weasel",
-                          L"UpdateChannel", L"release", REG_SZ);
-  }
-
   if (!IsProcAdmin()) {
     return RestartAsAdmin(lpCmdLine);
   }
@@ -253,18 +193,6 @@ static int Run(LPTSTR lpCmdLine) {
   bool hans = !wcscmp(L"/s", lpCmdLine);
   if (hans)
     return install(L"hans", silent);
-  bool hant = !wcscmp(L"/t", lpCmdLine);
-  if (hant)
-    return install(L"hant", silent);
-  bool hongkong = !wcscmp(L"/hk", lpCmdLine);
-  if (hongkong)
-    return install(L"hongkong", silent);
-  bool macau = !wcscmp(L"/mc", lpCmdLine);
-  if (macau)
-    return install(L"macau", silent);
-  bool singapore = !wcscmp(L"/sg", lpCmdLine);
-  if (singapore)
-    return install(L"singapore", silent);
   bool installing = !wcscmp(L"/i", lpCmdLine);
   return CustomInstall(installing);
 }

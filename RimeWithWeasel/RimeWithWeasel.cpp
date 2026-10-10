@@ -687,10 +687,7 @@ bool RimeWithWeaselHandler::_ShowMessage(Context& ctx, Status& status) {
         tips = L"部署完成";
     else if (m_message_value == "failure") {
       if (GetThreadUILanguage() ==
-          MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL))
-        tips = L"有錯誤，請查看日誌 %TEMP%\\rime.weasel\\rime.weasel.*.INFO";
-      else if (GetThreadUILanguage() ==
-               MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED))
+          MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED))
         tips = L"有错误，请查看日志 %TEMP%\\rime.weasel\\rime.weasel.*.INFO";
       else
         tips =

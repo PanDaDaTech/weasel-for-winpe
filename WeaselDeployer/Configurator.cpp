@@ -44,7 +44,7 @@ static void CreateDefaultCustomSettings() {
   o << "\n";
   o << "patch:\n";
   o << "  schema_list:\n";
-  o << "    - schema: luna_pinyin_simp\n";
+  o << "    - schema: rime_ice\n";
   o << "    - schema: wubi\n";
 }
 

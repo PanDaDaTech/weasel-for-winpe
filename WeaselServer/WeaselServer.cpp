@@ -9,7 +9,6 @@
 #include <WeaselUI.h>
 #include <RimeWithWeasel.h>
 #include <WeaselUtility.h>
-#include <winsparkle.h>
 #include <functional>
 #include <ShellScalingApi.h>
 #include <WinUser.h>
@@ -97,11 +96,6 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
         return 0;
     } else if (quit)
       return 0;
-  }
-
-  bool check_updates = !wcscmp(L"/update", lpstrCmdLine);
-  if (check_updates) {
-    WeaselServerApp::check_update();
   }
 
   CreateDirectory(WeaselUserDataPath().c_str(), NULL);

@@ -274,7 +274,7 @@ DWORD ServerImpl::OnUpdateInputPosition(WEASEL_IPC_COMMAND uMsg,
    * top:-2048~2047 = 12bit（有符号）
    * left:-2048~2047 = 12bit（有符号）
    *
-   * 高解析度下：
+   * 高分辨率下：
    * 移位标志 = 1bit == 1
    * height: 0~254 = 7bit（舍弃低1位）
    * top: -4096~4094 = 12bit（有符号，舍弃低1位）

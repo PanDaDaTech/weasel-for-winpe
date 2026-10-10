@@ -219,12 +219,10 @@ inline LANGID get_language_id() {
   std::wstring lang{};
   if (RegGetStringValue(HKEY_CURRENT_USER, L"Software\\Rime\\Weasel",
                         L"Language", lang) == ERROR_SUCCESS) {
-    if (lang == L"chs")
-      return MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
-    else if (lang == L"cht")
-      return MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL);
-    else if (lang == L"eng")
+    if (lang == L"eng")
       return MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+    // Traditional Chinese is no longer supported; use Simplified.
+    return MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
   }
   LANGID langId = GetUserDefaultUILanguage();
   if (langId == MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED) ||
@@ -233,7 +231,8 @@ inline LANGID get_language_id() {
   } else if (langId == MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL) ||
              langId == MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_HONGKONG) ||
              langId == MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_MACAU)) {
-    langId = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL);
+    // Traditional Chinese is no longer supported; use Simplified.
+    langId = MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
   } else {
     langId = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
   }

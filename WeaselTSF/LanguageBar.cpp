@@ -138,8 +138,6 @@ STDMETHODIMP CLangBarItemButton::GetTooltipString(BSTR* pbstrToolTip) {
   LANGID langid = get_language_id();
   if (langid == TEXTSERVICE_LANGID_HANS) {
     *pbstrToolTip = SysAllocString(L"左键切换模式，右键打开菜单");
-  } else if (langid == TEXTSERVICE_LANGID_HANT) {
-    *pbstrToolTip = SysAllocString(L"左鍵切換模式，右鍵打開菜單");
   } else {
     *pbstrToolTip = SysAllocString(
         L"Left-click to switch modes\n\nRight-click for more options");
@@ -166,8 +164,6 @@ STDMETHODIMP CLangBarItemButton::OnClick(TfLBIClick click,
       HMENU menu;
       if (langid == TEXTSERVICE_LANGID_HANS) {
         menu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_MENU_POPUP_HANS));
-      } else if (langid == TEXTSERVICE_LANGID_HANT) {
-        menu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_MENU_POPUP_HANT));
       } else {
         menu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_MENU_POPUP));
       }

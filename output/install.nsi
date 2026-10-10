@@ -1,11 +1,15 @@
 ﻿; weasel installation script
 !include FileFunc.nsh
 !include LogicLib.nsh
+!define MUI_FONT "Microsoft Yahei UI"
+!define MUI_FONTSIZE 9
 !include MUI2.nsh
 !include x64.nsh
 !include winVer.nsh
+!include nsDialogs.nsh
 
 Unicode true
+ManifestDPIAware true
 
 ;--------------------------------
 ; General
@@ -29,18 +33,24 @@ OutFile "archives\weasel-${PRODUCT_VERSION}-installer.exe"
 
 VIProductVersion "${WEASEL_VERSION}.${WEASEL_BUILD}"
 VIAddVersionKey /LANG=2052 "ProductName" "小狼毫"
-VIAddVersionKey /LANG=2052 "Comments" "Powered by RIME | 中州韻輸入法引擎"
+VIAddVersionKey /LANG=2052 "Comments" "Powered by RIME | 中州韵输入法引擎"
 VIAddVersionKey /LANG=2052 "CompanyName" "式恕堂"
 VIAddVersionKey /LANG=2052 "LegalCopyright" "Copyleft RIME Developers"
-VIAddVersionKey /LANG=2052 "FileDescription" "小狼毫輸入法"
+VIAddVersionKey /LANG=2052 "FileDescription" "小狼毫输入法"
 VIAddVersionKey /LANG=2052 "FileVersion" "${WEASEL_VERSION}"
 
 !define MUI_ICON ..\resource\weasel.ico
 SetCompressor /SOLID lzma
 
-
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
+
+;--------------------------------
+
+; Variables
+Var RimeUserDir
+Var RimeUserDirText
+Var RimeUserDirDialog
 
 ;--------------------------------
 
@@ -48,6 +58,7 @@ RequestExecutionLevel admin
 
 !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 !insertmacro MUI_PAGE_DIRECTORY
+Page custom RimeUserDirPage RimeUserDirPageLeave
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -59,39 +70,20 @@ RequestExecutionLevel admin
 
 ; Languages
 
-!insertmacro MUI_LANGUAGE "TradChinese"
-LangString DISPLAYNAME ${LANG_TRADCHINESE} "小狼毫輸入法"
-LangString LNKFORMANUAL ${LANG_TRADCHINESE} "【小狼毫】說明書"
-LangString LNKFORSETTING ${LANG_TRADCHINESE} "【小狼毫】輸入法設定"
-LangString LNKFORDICT ${LANG_TRADCHINESE} "【小狼毫】用戶詞典管理"
-LangString LNKFORSYNC ${LANG_TRADCHINESE} "【小狼毫】用戶資料同步"
-LangString LNKFORDEPLOY ${LANG_TRADCHINESE} "【小狼毫】重新部署"
-LangString LNKFORSERVER ${LANG_TRADCHINESE} "小狼毫算法服務"
-LangString LNKFORUSERFOLDER ${LANG_TRADCHINESE} "【小狼毫】用戶文件夾"
-LangString LNKFORAPPFOLDER ${LANG_TRADCHINESE} "【小狼毫】程序文件夾"
-LangString LNKFORUPDATER ${LANG_TRADCHINESE} "【小狼毫】檢查新版本"
-LangString LNKFORSETUP ${LANG_TRADCHINESE} "【小狼毫】安裝選項"
-LangString LNKFORUNINSTALL ${LANG_TRADCHINESE} "卸載小狼毫"
-LangString CONFIRMATION ${LANG_TRADCHINESE} "安裝前，請先卸載舊版本的小狼毫。$\n$\n按下「確定」移除舊版本，按下「取消」放棄本次安裝。"
-LangString SYSTEMVERSIONNOTOK ${LANG_TRADCHINESE} "您的系统不被支持，最低系統要求:Windows 8.1!"
-LangString AUTOCHKUPDATE ${LANG_TRADCHINESE} "自動檢查版本更新？"
-
 !insertmacro MUI_LANGUAGE "SimpChinese"
 LangString DISPLAYNAME ${LANG_SIMPCHINESE} "小狼毫输入法"
 LangString LNKFORMANUAL ${LANG_SIMPCHINESE} "【小狼毫】说明书"
-LangString LNKFORSETTING ${LANG_SIMPCHINESE} "【小狼毫】输入法设定"
+LangString LNKFORSETTING ${LANG_SIMPCHINESE} "【小狼毫】输入法设置"
 LangString LNKFORDICT ${LANG_SIMPCHINESE} "【小狼毫】用户词典管理"
-LangString LNKFORSYNC ${LANG_SIMPCHINESE} "【小狼毫】用户资料同步"
+LangString LNKFORSYNC ${LANG_SIMPCHINESE} "【小狼毫】用户数据同步"
 LangString LNKFORDEPLOY ${LANG_SIMPCHINESE} "【小狼毫】重新部署"
 LangString LNKFORSERVER ${LANG_SIMPCHINESE} "小狼毫算法服务"
 LangString LNKFORUSERFOLDER ${LANG_SIMPCHINESE} "【小狼毫】用户文件夹"
 LangString LNKFORAPPFOLDER ${LANG_SIMPCHINESE} "【小狼毫】程序文件夹"
-LangString LNKFORUPDATER ${LANG_SIMPCHINESE} "【小狼毫】检查新版本"
 LangString LNKFORSETUP ${LANG_SIMPCHINESE} "【小狼毫】安装选项"
 LangString LNKFORUNINSTALL ${LANG_SIMPCHINESE} "卸载小狼毫"
 LangString CONFIRMATION ${LANG_SIMPCHINESE} '安装前，请先卸载旧版本的小狼毫。$\n$\n点击 "确定" 移除旧版本，或点击 "取消" 放弃本次安装。'
-LangString SYSTEMVERSIONNOTOK ${LANG_SIMPCHINESE} "您的系統不被支持，最低系统要求:Windows 8.1!"
-LangString AUTOCHKUPDATE ${LANG_SIMPCHINESE} "自动检查版本更新？"
+LangString SYSTEMVERSIONNOTOK ${LANG_SIMPCHINESE} "您的系统不被支持，最低系统要求：Windows 8.1"
 
 !insertmacro MUI_LANGUAGE "English"
 LangString DISPLAYNAME ${LANG_ENGLISH} "Weasel"
@@ -103,16 +95,56 @@ LangString LNKFORDEPLOY ${LANG_ENGLISH} "Weasel Deploy"
 LangString LNKFORSERVER ${LANG_ENGLISH} "Weasel Server"
 LangString LNKFORUSERFOLDER ${LANG_ENGLISH} "Weasel User Folder"
 LangString LNKFORAPPFOLDER ${LANG_ENGLISH} "Weasel App Folder"
-LangString LNKFORUPDATER ${LANG_ENGLISH} "Weasel Check for Updates"
 LangString LNKFORSETUP ${LANG_ENGLISH} "Weasel Installation Preference"
 LangString LNKFORUNINSTALL ${LANG_ENGLISH} "Uninstall Weasel"
 LangString CONFIRMATION ${LANG_ENGLISH} "Before installation, please uninstall the old version of Weasel.$\n$\nPress 'OK' to remove the old version, or 'Cancel' to abort installation."
 LangString SYSTEMVERSIONNOTOK ${LANG_ENGLISH} "Your system not supported, minimium system required: Windows 8.1!"
-LangString AUTOCHKUPDATE ${LANG_ENGLISH} "Automatically check for updates?"
 
 ;--------------------------------
 
+; User data directory page
+
+Function RimeUserDirPage
+  nsDialogs::Create 1018
+  Pop $RimeUserDirDialog
+  ${If} $RimeUserDirDialog == error
+    Abort
+  ${EndIf}
+
+  ${NSD_CreateLabel} 0 0 100% 24u "选择 Rime 用户目录，用于保存用户词典与个人配置。留空则使用默认目录。"
+  Pop $0
+
+  ${NSD_CreateText} 0 28u 80% 13u "$RimeUserDir"
+  Pop $RimeUserDirText
+
+  ${NSD_CreateButton} 81% 28u 19% 13u "浏览..."
+  Pop $0
+  ${NSD_OnClick} $0 RimeUserDirBrowse
+
+  nsDialogs::Show
+FunctionEnd
+
+Function RimeUserDirBrowse
+  ${NSD_GetText} $RimeUserDirText $0
+  nsDialogs::SelectFolderDialog "选择 Rime 用户目录" "$0"
+  Pop $0
+  ${If} $0 != error
+    ${NSD_SetText} $RimeUserDirText "$0"
+  ${EndIf}
+FunctionEnd
+
+Function RimeUserDirPageLeave
+  ${NSD_GetText} $RimeUserDirText $RimeUserDir
+FunctionEnd
+
 Function .onInit
+  SetFont "Microsoft Yahei UI" 9
+
+  ; Silent install keeps the default user directory and skips the page.
+  ${IfNot} ${Silent}
+    ExpandEnvStrings $RimeUserDir "%APPDATA%\Rime"
+  ${EndIf}
+
   ; if not version >= 8.1, quit and MessageBox(if not silent)
   ${IfNot} ${AtLeastWin8.1}
     IfSilent toquit
@@ -289,18 +321,13 @@ program_files:
 
   SetOutPath $INSTDIR
 
-  ; test /T flag for zh_TW locale
-  StrCpy $R2 "/i"
-  ${GetParameters} $R0
-  ClearErrors
-  ${GetOptions} $R0 "/S" $R1
-  IfErrors +2 0
-  StrCpy $R2 "/s"
-  ${GetOptions} $R0 "/T" $R1
-  IfErrors +2 0
-  StrCpy $R2 "/t"
+  ; Write the user data directory chosen during setup (empty = default).
+  ${If} $RimeUserDir != ""
+    WriteRegStr HKCU "Software\Rime\Weasel" "RimeUserDir" "$RimeUserDir"
+  ${EndIf}
 
-  ExecWait '"$INSTDIR\WeaselSetup.exe" $R2'
+  ; Install the language profile silently; no interactive prompt.
+  ExecWait '"$INSTDIR\WeaselSetup.exe" /i'
 
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "${REG_UNINST_KEY}" "DisplayName" "$(DISPLAYNAME)"
@@ -314,14 +341,8 @@ program_files:
   WriteRegDWORD HKLM "${REG_UNINST_KEY}" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
-  ; run as user...
-  IfSilent deploy_silently
-  ExecWait "$INSTDIR\WeaselDeployer.exe /install"
-  GoTo deploy_done
-
-  deploy_silently:
+  ; Deploy the workspace (silent).
   ExecWait "$INSTDIR\WeaselDeployer.exe /deploy"
-  deploy_done:
 
   ; don't redirect on 64 bit system for auto run setting
   ${If} ${IsNativeARM64}
@@ -333,16 +354,6 @@ program_files:
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "WeaselServer" "$INSTDIR\WeaselServer.exe"
   ; Start WeaselServer
   Exec "$INSTDIR\WeaselServer.exe"
-
-  ; option CheckForUpdates
-  IfSilent DisableAutoCheckUpdate
-  MessageBox MB_YESNO|MB_ICONINFORMATION "$(AUTOCHKUPDATE)" IDYES EnableAutoCheckUpdate
-  DisableAutoCheckUpdate:
-  WriteRegStr HKCU "Software\Rime\Weasel\Updates" "CheckForUpdates" "0"
-  GoTo end
-  EnableAutoCheckUpdate:
-  WriteRegStr HKCU "Software\Rime\Weasel\Updates" "CheckForUpdates" "1"
-  end:
 
   ; Prompt reboot
   StrCmp $0 "Upgrade" 0 +2
@@ -362,7 +373,6 @@ Section "Start Menu Shortcuts"
   CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORSERVER).lnk" "$INSTDIR\WeaselServer.exe" "" "$INSTDIR\WeaselServer.exe" 0
   CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORUSERFOLDER).lnk" "$INSTDIR\WeaselServer.exe" "/userdir" "$SYSDIR\shell32.dll" 126
   CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORAPPFOLDER).lnk" "$INSTDIR\WeaselServer.exe" "/weaseldir" "$SYSDIR\shell32.dll" 19
-  CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORUPDATER).lnk" "$INSTDIR\WeaselServer.exe" "/update" "$SYSDIR\shell32.dll" 13
   CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORSETUP).lnk" "$INSTDIR\WeaselSetup.exe" "" "$SYSDIR\shell32.dll" 162
   CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\$(LNKFORUNINSTALL).lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 
