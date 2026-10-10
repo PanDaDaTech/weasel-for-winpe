@@ -26,8 +26,30 @@ static void CreateFileIfNotExist(std::string filename) {
     o.close();
   }
 }
+
+// Seed default.custom.yaml with the bundled input schemes so that a fresh
+// deployment (e.g. a Windows PE image) enables only Simplified pinyin and
+// Wubi without an extra manual step.
+static void CreateDefaultCustomSettings() {
+  const std::filesystem::path file_path =
+      WeaselUserDataPath() / L"default.custom.yaml";
+  DWORD dwAttrib = GetFileAttributes(file_path.c_str());
+  if (INVALID_FILE_ATTRIBUTES != dwAttrib &&
+      0 == (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+    return;
+  }
+  std::ofstream o(file_path, std::ios::trunc);
+  o << "# Rime default settings\n";
+  o << "# encoding: utf-8\n";
+  o << "\n";
+  o << "patch:\n";
+  o << "  schema_list:\n";
+  o << "    - schema: luna_pinyin_simp\n";
+  o << "    - schema: wubi\n";
+}
+
 Configurator::Configurator() {
-  CreateFileIfNotExist("default.custom.yaml");
+  CreateDefaultCustomSettings();
   CreateFileIfNotExist("weasel.custom.yaml");
 }
 

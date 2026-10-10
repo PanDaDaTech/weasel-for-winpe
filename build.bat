@@ -292,6 +292,7 @@ rem ---------------------------------------------------------------------------
   set plum_dir=plum
   set rime_dir=output/data
   set WSLENV=plum_dir:rime_dir
+  if not defined WEASEL_BUNDLED_RECIPES set WEASEL_BUNDLED_RECIPES=:preset wubi
   bash plum/rime-install %WEASEL_BUNDLED_RECIPES%
   if errorlevel 1 goto error
   exit /b
