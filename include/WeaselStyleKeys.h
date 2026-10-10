@@ -103,7 +103,7 @@ inline const std::vector<StyleKeyInfo>& GetStyleKeys() {
 
   static const std::vector<StyleKeyInfo> kKeys = {
       {"style/color_scheme",
-       {"配色方案", "配色方案", "Color scheme"},
+       {"主题方案", "主題方案", "Theme"},
        StyleValueType::Theme,
        nullptr,
        0},

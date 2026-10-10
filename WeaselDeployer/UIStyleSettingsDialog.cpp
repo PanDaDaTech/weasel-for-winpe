@@ -229,7 +229,7 @@ LRESULT UIStyleSettingsDialog::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&) {
   style_value_combo_.Attach(GetDlgItem(IDC_STYLE_VALUE_COMBO));
   style_value_edit_.Attach(GetDlgItem(IDC_STYLE_VALUE_EDIT));
   set_style_.Attach(GetDlgItem(IDC_SET_STYLE));
-  preview_context_.preedit = weasel::Text(L"小狼毫pei se\u2038");
+  preview_context_.preedit = weasel::Text(L"小狼毫zhu ti\u2038");
   weasel::TextAttribute preedit_attribute(3, 9, weasel::HIGHLIGHTED);
   preedit_attribute.range.cursor = 9;
   preview_context_.preedit.attributes.push_back(preedit_attribute);
@@ -240,15 +240,15 @@ LRESULT UIStyleSettingsDialog::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&) {
   preview_context_.cinfo.labels = {weasel::Text(L"1"), weasel::Text(L"2"),
                                    weasel::Text(L"3"), weasel::Text(L"4"),
                                    weasel::Text(L"5")};
-  preview_context_.cinfo.candies = {weasel::Text(L"配色"), weasel::Text(L"陪"),
-                                    weasel::Text(L"配"), weasel::Text(L"賠"),
-                                    weasel::Text(L"培")};
-  preview_context_.cinfo.comments = {
-      weasel::Text(L"pei se"), weasel::Text(L"pei"), weasel::Text(L"pei"),
-      weasel::Text(L"pei"), weasel::Text(L"pei")};
+  preview_context_.cinfo.candies = {weasel::Text(L"主题"), weasel::Text(L"主"),
+                                    weasel::Text(L"提"), weasel::Text(L"体"),
+                                    weasel::Text(L"题")};
+  preview_context_.cinfo.comments = {weasel::Text(L"zhu ti"),
+                                     weasel::Text(L"zhu"), weasel::Text(L"ti"),
+                                     weasel::Text(L"zhu"), weasel::Text(L"ti")};
   preview_status_.composing = true;
-  preview_status_.schema_name = L"朙月拼音";
-  preview_status_.schema_id = L"luna_pinyin";
+  preview_status_.schema_name = L"雾凇拼音";
+  preview_status_.schema_id = L"rime_ice";
   preview_ui_ = std::make_unique<weasel::UI>();
   weasel::UIStyle initial_style;
   if (settings_->LoadPreviewStyle(&initial_style)) {

@@ -200,7 +200,7 @@ int Configurator::DictManagement() {
   if (GetLastError() == ERROR_ALREADY_EXISTS) {
     LOG(WARNING) << "another deployer process is running; aborting operation.";
     CloseHandle(hMutex);
-    // MessageBox(NULL, L"正在執行另一項部署任務，請稍候再試。", L"【小狼毫】",
+    // MessageBox(NULL, L"正在执行另一项部署任务，请稍后再试。", L"【小狼毫】",
     // MB_OK | MB_ICONINFORMATION);
     MSG_BY_IDS(IDS_STR_DEPLOYING_WAIT, IDS_STR_WEASEL,
                MB_OK | MB_ICONINFORMATION);
@@ -240,7 +240,7 @@ int Configurator::SyncUserData() {
   if (GetLastError() == ERROR_ALREADY_EXISTS) {
     LOG(WARNING) << "another deployer process is running; aborting operation.";
     CloseHandle(hMutex);
-    // MessageBox(NULL, L"正在執行另一項部署任務，請稍候再試。", L"【小狼毫】",
+    // MessageBox(NULL, L"正在执行另一项部署任务，请稍后再试。", L"【小狼毫】",
     // MB_OK | MB_ICONINFORMATION);
     MSG_BY_IDS(IDS_STR_DEPLOYING_WAIT, IDS_STR_WEASEL,
                MB_OK | MB_ICONINFORMATION);

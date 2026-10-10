@@ -118,7 +118,7 @@ Function RimeUserDirPage
   ${NSD_CreateText} 0 28u 80% 13u "$RimeUserDir"
   Pop $RimeUserDirText
 
-  ${NSD_CreateButton} 81% 28u 19% 13u "浏览..."
+  ${NSD_CreateButton} 81% 28u 19% 13u "浏览…"
   Pop $0
   ${NSD_OnClick} $0 RimeUserDirBrowse
 
