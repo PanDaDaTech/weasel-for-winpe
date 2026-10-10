@@ -1,0 +1,87 @@
+# Weasel settings
+# encoding: utf-8
+
+config_version: "0.23"
+
+app_options:
+  cmd.exe:
+    ascii_mode: false
+  conhost.exe:
+    ascii_mode: false
+
+show_notifications: true
+# how long a period notifications shows
+show_notifications_time: 1200
+# use global ascii status
+global_ascii: false
+
+style:
+  antialias_mode: default
+  ascii_tip_follow_cursor: false
+  color_scheme: win11light
+  color_scheme_dark: win11dark
+  font_face: Microsoft YaHei
+  label_font_face: Microsoft YaHei
+  comment_font_face: Microsoft YaHei
+  font_point: 15
+  label_font_point: 15
+  comment_font_point: 15
+  candidate_abbreviate_length: 0
+  click_to_capture: false
+  horizontal: true
+  fullscreen: false
+  inline_preedit: true
+  preedit_type: composition
+  display_tray_icon: false
+  label_format: "%s"
+  mark_text: ""
+  hover_type: none # semi_light, hilite
+  paging_on_scroll: false
+  vertical_auto_reverse: false
+  vertical_text: false
+  vertical_text_left_to_right: false
+  vertical_text_with_wrap: false
+  layout:
+    align_type: center
+    max_width: 0  #set 0 to disable max width
+    min_width: 10
+    min_height: 0
+    max_height: 0  #set 0 to disable max height
+    border: 2
+    margin_x: 16
+    margin_y: 8
+    spacing: 10
+    candidate_spacing: 22
+    hilite_spacing: 6
+    hilite_padding: 2
+    hilite_padding_x: 8
+    round_corner: 8   #别名 hilited_corner_radius
+    corner_radius: 10
+    shadow_radius: 8
+    shadow_offset_x: 4
+    shadow_offset_y: 4
+    linespacing: 0 # percentage of font point, 0 to disable
+    baseline: 0 # percentage of font point, 0 to disable
+
+preset_color_schemes:
+  win11light:
+    name: "Win11 浅色/深色（跟随系统）"
+    text_color: 0x191919
+    label_color: 0x191919
+    hilited_label_color: 0x191919
+    back_color: 0xf9f9f9
+    border_color: 0x009e5a00
+    hilited_mark_color: 0xc06700
+    hilited_candidate_back_color: 0xf0f0f0
+    shadow_color: 0x20000000
+
+  win11dark:
+    name: "Win11 深色 / Win11 Dark"
+    text_color: 0xf9f9f9
+    label_color: 0xf9f9f9
+    back_color: 0x2C2C2C
+    hilited_label_color: 0xf9f9f9
+    border_color: 0x002C2C2C
+    hilited_mark_color: 0xFFC24C
+    hilited_candidate_back_color: 0x383838
+    shadow_color: 0x20000000

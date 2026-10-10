@@ -295,6 +295,8 @@ rem ---------------------------------------------------------------------------
   if not defined WEASEL_BUNDLED_RECIPES set WEASEL_BUNDLED_RECIPES=prelude iDvel/rime-ice wubi
   bash plum/rime-install %WEASEL_BUNDLED_RECIPES%
   if errorlevel 1 goto error
+  rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
+  copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
 
 rem ---------------------------------------------------------------------------
