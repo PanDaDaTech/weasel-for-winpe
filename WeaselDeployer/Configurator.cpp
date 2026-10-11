@@ -36,7 +36,7 @@ static void CreateDefaultCustomSettings() {
   o << "patch:\n";
   o << "  schema_list:\n";
   o << "    - schema: rime_ice\n";
-  o << "    - schema: wubi\n";
+  o << "    - schema: wubi86\n";
 }
 
 // Force the bundled Win11 theme, replacing any pre-existing user skin (e.g. a

@@ -308,15 +308,9 @@ program_files:
   ${Endif}
 
   File "WeaselSetup.exe"
-  ; shared data files
+  ; shared data files (recurse so cn_dicts/en_dicts/lua/opencc are included)
   SetOutPath $INSTDIR\data
-  File "data\*.yaml"
-  File /nonfatal "data\*.txt"
-  File /nonfatal "data\*.gram"
-  ; opencc data files
-  SetOutPath $INSTDIR\data\opencc
-  File "data\opencc\*.json"
-  File "data\opencc\*.ocd*"
+  File /r "data\*.*"
 
   SetOutPath $INSTDIR
 
@@ -400,11 +394,8 @@ Section "Uninstall"
 
   ; Remove files and uninstaller
   SetOutPath $TEMP
-  Delete  "$INSTDIR\data\opencc\*.*"
-  Delete  "$INSTDIR\data\*.*"
+  RMDir /r "$INSTDIR\data"
   Delete  "$INSTDIR\*.*"
-  RMDir  "$INSTDIR\data\opencc"
-  RMDir  "$INSTDIR\data"
   RMDir  "$INSTDIR"
   SetShellVarContext all
   Delete  "$SMPROGRAMS\$(DISPLAYNAME)\*.*"
