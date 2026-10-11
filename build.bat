@@ -296,6 +296,10 @@ rem ---------------------------------------------------------------------------
   if not defined WEASEL_BUNDLED_RECIPES set WEASEL_BUNDLED_RECIPES=prelude Mintimate/oh-my-rime:full
   bash plum/rime-install %WEASEL_BUNDLED_RECIPES%
   if errorlevel 1 goto error
+  rem the recipe does not always copy the sub-directories; take them from the clone
+  set oh_my_rime=%WEASEL_ROOT%\plum\package\Mintimate\oh-my-rime
+  if exist "%oh_my_rime%\dicts" xcopy /e /i /y /q "%oh_my_rime%\dicts" "output\data\dicts" >nul
+  if exist "%oh_my_rime%\lua" xcopy /e /i /y /q "%oh_my_rime%\lua" "output\data\lua" >nul
   rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
   copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
