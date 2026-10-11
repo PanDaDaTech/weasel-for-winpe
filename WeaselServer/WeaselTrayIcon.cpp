@@ -6,8 +6,6 @@
 #include <resource.h>
 
 static UINT mode_icon[] = {IDI_ZH, IDI_ZH, IDI_EN, IDI_RELOAD};
-static const WCHAR* mode_label[] = {NULL, /*L"中文"*/ NULL, /*L"西文"*/ NULL,
-                                    L"Under maintenance"};
 
 WeaselTrayIcon::WeaselTrayIcon(weasel::UI& ui)
     : m_style(ui.style()),
@@ -120,14 +118,9 @@ void WeaselTrayIcon::Refresh(const WeaselTrayIconState& state) {
     } else
       SetIcon(mode_icon[mode]);
 
-    if (mode_label[mode] && m_disabled == false) {
-      CString info;
-      info.LoadStringW(IDS_STR_UNDER_MAINTENANCE);
-      ShowBalloon(info, get_weasel_ime_name().c_str());
-      m_disabled = true;
-    }
-    if (m_mode != DISABLED)
-      m_disabled = false;
+    // No "under maintenance" tray balloon: it used to pop up when syncing or
+    // deploying and on start-up.
+    m_disabled = (mode == DISABLED);
   } else if (!Visible()) {
     ShowIcon();
   }

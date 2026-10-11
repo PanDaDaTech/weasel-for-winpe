@@ -684,7 +684,7 @@ bool RimeWithWeaselHandler::_ShowMessage(Context& ctx, Status& status) {
       if (GetThreadUILanguage() == MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US))
         tips = L"Deployed";
       else
-        tips = L"部署完成";
+        tips = L"数据同步完成";
     else if (m_message_value == "failure") {
       if (GetThreadUILanguage() ==
           MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED))
