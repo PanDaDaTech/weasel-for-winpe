@@ -442,6 +442,17 @@ program_files:
   ; Start WeaselServer
   Exec "$INSTDIR\WeaselServer.exe"
 
+  ; On WinPE the shell may have loaded the TSF DLL half-initialised during
+  ; installation; restart Explorer so it reloads it cleanly (fixes the
+  ; "Explorer becomes unresponsive after install" symptom).
+  ClearErrors
+  EnumRegKey $0 HKLM "SYSTEM\CurrentControlSet\Control\MiniNT" 0
+  IfErrors no_pe_restart
+  ExecWait 'taskkill /f /im explorer.exe'
+  Sleep 800
+  Exec 'explorer.exe'
+no_pe_restart:
+
   ; Prompt reboot
   StrCmp $0 "Upgrade" 0 +2
   SetRebootFlag true
