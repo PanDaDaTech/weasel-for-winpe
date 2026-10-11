@@ -265,9 +265,9 @@ program_files:
   File "rime-install-config.bat"
   File "start_service.bat"
   File "stop_service.bat"
-  File "weasel.dll"
+  File /nonfatal "weasel.dll"
   ${If} ${RunningX64}
-    File "weaselx64.dll"
+    File /nonfatal "weaselx64.dll"
   ${EndIf}
   ${If} ${IsNativeARM64}
     File /nonfatal "weaselARM.dll"
