@@ -83,6 +83,7 @@ class WeaselTrayIcon : public CSystemTray {
   std::wstring m_schema_zhung_icon;
   std::wstring m_schema_ascii_icon;
   bool m_disabled;
+  bool m_dark;
 
   // Guarded by m_state_mutex.
   bool m_refresh_enabled = true;

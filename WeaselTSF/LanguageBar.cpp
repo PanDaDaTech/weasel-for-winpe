@@ -194,9 +194,10 @@ STDMETHODIMP CLangBarItemButton::OnMenuSelect(UINT wID) {
 STDMETHODIMP CLangBarItemButton::GetIcon(HICON* phIcon) {
   if (ascii_mode) {
     if (_style.current_ascii_icon.empty())
-      *phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(IDI_EN), IMAGE_ICON,
-                                  GetSystemMetrics(SM_CXSMICON),
-                                  GetSystemMetrics(SM_CYSMICON), LR_SHARED);
+      *phIcon = (HICON)LoadImageW(
+          g_hInst, MAKEINTRESOURCEW(IsUserDarkMode() ? IDI_EN_DARK : IDI_EN),
+          IMAGE_ICON, GetSystemMetrics(SM_CXSMICON),
+          GetSystemMetrics(SM_CYSMICON), LR_SHARED);
     else
       *phIcon =
           (HICON)LoadImageW(NULL, _style.current_ascii_icon.c_str(), IMAGE_ICON,
@@ -204,9 +205,10 @@ STDMETHODIMP CLangBarItemButton::GetIcon(HICON* phIcon) {
                             GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE);
   } else {
     if (_style.current_zhung_icon.empty())
-      *phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(IDI_ZH), IMAGE_ICON,
-                                  GetSystemMetrics(SM_CXSMICON),
-                                  GetSystemMetrics(SM_CYSMICON), LR_SHARED);
+      *phIcon = (HICON)LoadImageW(
+          g_hInst, MAKEINTRESOURCEW(IsUserDarkMode() ? IDI_ZH_DARK : IDI_ZH),
+          IMAGE_ICON, GetSystemMetrics(SM_CXSMICON),
+          GetSystemMetrics(SM_CYSMICON), LR_SHARED);
     else
       *phIcon =
           (HICON)LoadImageW(NULL, _style.current_zhung_icon.c_str(), IMAGE_ICON,

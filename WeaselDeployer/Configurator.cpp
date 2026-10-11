@@ -36,6 +36,7 @@ static void CreateDefaultCustomSettings() {
   o << "patch:\n";
   o << "  schema_list:\n";
   o << "    - schema: rime_mint\n";
+  o << "    - schema: rime_mint_flypy\n";
   o << "    - schema: wubi86_jidian\n";
   o << "    - schema: wubi98_mint\n";
 }

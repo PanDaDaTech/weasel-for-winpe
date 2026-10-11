@@ -9,6 +9,8 @@
 #define IDR_MENU_POPUP                  105
 #define IDI_FULL_SHAPE                  106
 #define IDI_HALF_SHAPE                  107
+#define IDI_EN_DARK                     110
+#define IDI_ZH_DARK                     111
 #define IDR_MENU_POPUP_HANT             108
 #define IDR_MENU_POPUP_HANS             109
 #define IDS_STR_UNDER_MAINTENANCE       302

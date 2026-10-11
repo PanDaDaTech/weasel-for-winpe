@@ -20,12 +20,12 @@ style:
   ascii_tip_follow_cursor: false
   color_scheme: win11light
   color_scheme_dark: win11dark
-  font_face: Microsoft YaHei
+  font_face: "Segoe UI Emoji:23:23, Segoe UI Emoji:2a:2a, Segoe UI Emoji:30:39, Segoe UI Emoji:fe0f:fe0f, Segoe UI Emoji:20e3:20e3, Segoe UI, Microsoft YaHei, DengXian, Segoe UI Emoji, Noto Color Emoji, Segoe UI Symbol"
   label_font_face: Microsoft YaHei
   comment_font_face: Microsoft YaHei
-  font_point: 15
-  label_font_point: 15
-  comment_font_point: 15
+  font_point: 14
+  label_font_point: 14
+  comment_font_point: 14
   candidate_abbreviate_length: 0
   click_to_capture: false
   horizontal: true
@@ -65,7 +65,7 @@ style:
 
 preset_color_schemes:
   win11light:
-    name: "Win11 浅色/深色（跟随系统）"
+    name: "默认（根据系统）"
     text_color: 0x191919
     label_color: 0x191919
     hilited_label_color: 0x191919
