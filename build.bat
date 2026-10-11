@@ -321,6 +321,23 @@ rem ---------------------------------------------------------------------------
   rem drop the big mint/wanxiang and unused dictionaries
   del /q output\data\dicts\rime_mint.chars.dict.yaml output\data\dicts\rime_mint.base.dict.yaml output\data\dicts\rime_mint.correlation.dict.yaml output\data\dicts\rime_mint.compatible.dict.yaml output\data\dicts\rime_mint.places.dict.yaml output\data\dicts\rime_mint.ext.dict.yaml 2>nul
   del /q output\data\dicts\other_emoji.dict.yaml output\data\dicts\rime_ice.ext.dict.yaml output\data\dicts\rime_ice.cn_en.txt 2>nul
+  rem enable wubi <-> pinyin mixed input: let abc_segmentor also tag rime_mint
+  if exist output\data\wubi86_jidian.schema.yaml (
+    >> output\data\wubi86_jidian.schema.yaml (
+      echo.
+      echo abc_segmentor:
+      echo   extra_tags:
+      echo     - rime_mint
+    )
+  )
+  if exist output\data\wubi98_mint.schema.yaml (
+    >> output\data\wubi98_mint.schema.yaml (
+      echo.
+      echo abc_segmentor:
+      echo   extra_tags:
+      echo     - rime_mint
+    )
+  )
   rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
   copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
