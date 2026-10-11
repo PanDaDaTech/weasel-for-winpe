@@ -1,0 +1,19 @@
+# Rime dictionary
+# encoding: utf-8
+#
+# rime_mint dictionary, backed by the rime-ice (雾凇拼音) word lists.
+# Kept under the name rime_mint because the oh-my-rime wubi schemas use it for
+# their built-in Pinyin mixed input.
+---
+name: rime_mint
+version: "2026-01-26"
+sort: by_weight
+use_preset_vocabulary: false
+import_tables:
+  - cn_dicts/8105     # 字表
+  - cn_dicts/base     # 基础词库
+  - cn_dicts/others   # 杂项
+  - dicts/custom_simple
+  - dicts/other_kaomoji
+  - dicts/rime_ice.others
+...

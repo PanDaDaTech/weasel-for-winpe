@@ -308,14 +308,19 @@ rem ---------------------------------------------------------------------------
   del /q output\data\terra_pinyin.schema.yaml output\data\terra_pinyin.dict.yaml output\data\terra_symbols.yaml 2>nul
   del /q output\data\stroke.schema.yaml output\data\stroke.dict.yaml 2>nul
   del /q output\data\radical_pinyin_flypy.schema.yaml 2>nul
-  rem drop unused dictionaries (not referenced by the retained schemes)
+  rem replace the mint pinyin dictionaries with rime-ice's (smaller) word lists
+  if exist rime-ice-src rmdir /s /q rime-ice-src
+  git clone --depth 1 https://github.com/iDvel/rime-ice rime-ice-src
+  if errorlevel 1 goto error
+  if not exist output\data\cn_dicts mkdir output\data\cn_dicts
+  copy /y rime-ice-src\cn_dicts\8105.dict.yaml output\data\cn_dicts\ >nul
+  copy /y rime-ice-src\cn_dicts\base.dict.yaml output\data\cn_dicts\ >nul
+  copy /y rime-ice-src\cn_dicts\others.dict.yaml output\data\cn_dicts\ >nul
+  copy /y "%WEASEL_ROOT%\resource\rime_mint.dict.yaml" output\data\rime_mint.dict.yaml >nul
+  rmdir /s /q rime-ice-src
+  rem drop the big mint/wanxiang and unused dictionaries
+  del /q output\data\dicts\rime_mint.chars.dict.yaml output\data\dicts\rime_mint.base.dict.yaml output\data\dicts\rime_mint.correlation.dict.yaml output\data\dicts\rime_mint.compatible.dict.yaml output\data\dicts\rime_mint.places.dict.yaml output\data\dicts\rime_mint.ext.dict.yaml 2>nul
   del /q output\data\dicts\other_emoji.dict.yaml output\data\dicts\rime_ice.ext.dict.yaml output\data\dicts\rime_ice.cn_en.txt 2>nul
-  rem trim the optional extension/place dictionaries from rime_mint (biggest files)
-  if exist output\data\dicts\rime_mint.ext.dict.yaml (
-    findstr /v /i /c:"dicts/rime_mint.ext" /c:"dicts/rime_mint.places" output\data\rime_mint.dict.yaml > output\data\rime_mint.tmp
-    move /y output\data\rime_mint.tmp output\data\rime_mint.dict.yaml >nul
-    del /q output\data\dicts\rime_mint.ext.dict.yaml output\data\dicts\rime_mint.places.dict.yaml
-  )
   rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
   copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
