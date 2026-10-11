@@ -301,6 +301,13 @@ rem ---------------------------------------------------------------------------
   if exist "%oh_my_rime%\dicts" xcopy /e /i /y /q "%oh_my_rime%\dicts" "output\data\dicts" >nul
   if exist "%oh_my_rime%\lua" xcopy /e /i /y /q "%oh_my_rime%\lua" "output\data\lua" >nul
   if exist "%oh_my_rime%\rime.lua" copy /y "%oh_my_rime%\rime.lua" output\data\rime.lua >nul
+  rem drop every scheme except rime_mint / rime_mint_flypy / wubi86 / wubi98
+  del /q output\data\double_pinyin.schema.yaml output\data\double_pinyin_abc.schema.yaml output\data\double_pinyin_flypy.schema.yaml output\data\double_pinyin_mspy.schema.yaml output\data\double_pinyin_sogou.schema.yaml output\data\double_pinyin_ziguang.schema.yaml 2>nul
+  del /q output\data\t9.schema.yaml 2>nul
+  del /q output\data\terra_pinyin.schema.yaml output\data\terra_pinyin.dict.yaml output\data\terra_symbols.yaml 2>nul
+  del /q output\data\radical_pinyin.schema.yaml output\data\radical_pinyin.dict.yaml output\data\radical_pinyin_flypy.schema.yaml 2>nul
+  del /q output\data\stroke.schema.yaml output\data\stroke.dict.yaml 2>nul
+  del /q output\data\melt_eng.schema.yaml output\data\melt_eng.dict.yaml 2>nul
   rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
   copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
