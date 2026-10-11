@@ -145,13 +145,6 @@ jobs:
             .\xbuild.bat arm64 installer
           }
 
-      - name: Compress Debug Symbols
-        if: matrix.variant == 'msbuild'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          output\7z.exe a -t7z "./output/archives/debug_symbols.7z" "output/*.pdb" -r
-
       - name: Upload artifacts
         if: matrix.variant == 'msbuild'
         uses: actions/upload-artifact@v4
@@ -160,7 +153,6 @@ jobs:
           if-no-files-found: error
           path: |
             .\output\archives\weasel*.exe
-            .\output\archives\debug_symbols.7z
 
       # Release-only steps (run on tags or master)
       - name: Extract changelog
@@ -178,7 +170,6 @@ jobs:
           title: "Nightly Build"
           files: |
             ./output/archives/weasel*.exe
-            ./output/archives/debug_symbols.7z
 
       - name: Release (stable)
         if: ${{ github.repository == 'rime/weasel' && startsWith(github.ref, 'refs/tags/') && matrix.variant == 'msbuild' }}
@@ -187,5 +178,4 @@ jobs:
           draft: true
           files: |
             ./output/archives/weasel*.exe
-            ./output/archives/debug_symbols.7z
           body_path: ${{ github.workspace }}/RELEASE_CHANGELOG.md
