@@ -45,6 +45,19 @@ inline fs::path WeaselLogPath() {
   return path;
 }
 
+// Detects a Windows PE environment (the WinPE shell cannot render the custom
+// language-bar icons).
+inline bool IsWindowsPE() {
+  HKEY key = nullptr;
+  if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                    L"SYSTEM\\CurrentControlSet\\Control\\MiniNT", 0, KEY_READ,
+                    &key) == ERROR_SUCCESS) {
+    RegCloseKey(key);
+    return true;
+  }
+  return false;
+}
+
 inline BOOL IsUserDarkMode() {
   constexpr const LPCWSTR key =
       L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";

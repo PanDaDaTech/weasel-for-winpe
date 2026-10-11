@@ -29,16 +29,33 @@ static void CreateDefaultCustomSettings() {
       0 == (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
     return;
   }
+  // Input mode / word association chosen by the installer (default: mixed).
+  std::wstring input_mode = L"hs";
+  RegGetStringValue(HKEY_CURRENT_USER, L"Software\\Rime\\Weasel", L"InputMode",
+                    input_mode);
+  std::wstring word_assoc = L"1";
+  RegGetStringValue(HKEY_CURRENT_USER, L"Software\\Rime\\Weasel", L"WordAssoc",
+                    word_assoc);
   std::ofstream o(file_path, std::ios::trunc);
   o << "# Rime default settings\n";
   o << "# encoding: utf-8\n";
   o << "\n";
   o << "patch:\n";
   o << "  schema_list:\n";
-  o << "    - schema: rime_mint\n";
-  o << "    - schema: rime_mint_flypy\n";
-  o << "    - schema: wubi86_jidian\n";
-  o << "    - schema: wubi98_mint\n";
+  if (input_mode == L"py") {
+    o << "    - schema: rime_mint\n";
+  } else if (input_mode == L"wb") {
+    o << "    - schema: wubi86_jidian\n";
+    o << "    - schema: wubi98_mint\n";
+  } else {
+    o << "    - schema: rime_mint\n";
+    o << "    - schema: rime_mint_flypy\n";
+    o << "    - schema: wubi86_jidian\n";
+    o << "    - schema: wubi98_mint\n";
+  }
+  const char* assoc = (word_assoc == L"0") ? "false" : "true";
+  o << "  translator/enable_sentence: " << assoc << "\n";
+  o << "  translator/enable_completion: " << assoc << "\n";
 }
 
 // Force the bundled Win11 theme, replacing any pre-existing user skin (e.g. a

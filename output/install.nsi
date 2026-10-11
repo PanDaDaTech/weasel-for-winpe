@@ -52,6 +52,12 @@ RequestExecutionLevel admin
 Var RimeUserDir
 Var RimeUserDirText
 Var RimeUserDirDialog
+Var RimeModePy
+Var RimeModeWb
+Var RimeModeHs
+Var RimeWordAssoc
+Var InputMode
+Var WordAssoc
 
 ;--------------------------------
 
@@ -60,6 +66,7 @@ Var RimeUserDirDialog
 !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 !insertmacro MUI_PAGE_DIRECTORY
 Page custom RimeUserDirPage RimeUserDirPageLeave
+Page custom RimeFeaturesPage RimeFeaturesPageLeave
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -139,7 +146,89 @@ Function RimeUserDirPageLeave
   ${NSD_GetText} $RimeUserDirText $RimeUserDir
 FunctionEnd
 
+;--------------------------------
+; Feature selection page (input mode + word association)
+
+Function RimeFeaturesPage
+  !insertmacro MUI_HEADER_TEXT "选择功能" "选择输入模式与词语联想。"
+  nsDialogs::Create 1018
+  Pop $0
+  ${If} $0 == error
+    Abort
+  ${EndIf}
+
+  ${NSD_CreateGroupBox} 0 0 100% 52u "输入模式"
+  Pop $0
+  ${NSD_CreateRadioButton} 6% 14u 88% 10u "纯拼音输入（薄荷拼音）"
+  Pop $RimeModePy
+  ${NSD_CreateRadioButton} 6% 26u 88% 10u "纯五笔输入（五笔86 / 五笔98）"
+  Pop $RimeModeWb
+  ${NSD_CreateRadioButton} 6% 38u 88% 10u "混输模式（五笔 + 拼音）"
+  Pop $RimeModeHs
+  ${NSD_CreateCheckBox} 0 58u 100% 10u "启用词语联想"
+  Pop $RimeWordAssoc
+
+  ${If} $InputMode == "py"
+    ${NSD_SetState} $RimeModePy ${BST_CHECKED}
+  ${ElseIf} $InputMode == "wb"
+    ${NSD_SetState} $RimeModeWb ${BST_CHECKED}
+  ${Else}
+    ${NSD_SetState} $RimeModeHs ${BST_CHECKED}
+  ${EndIf}
+  ${If} $WordAssoc == "1"
+    ${NSD_SetState} $RimeWordAssoc ${BST_CHECKED}
+  ${EndIf}
+
+  nsDialogs::Show
+FunctionEnd
+
+Function RimeFeaturesPageLeave
+  ${NSD_GetState} $RimeModePy $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $InputMode "py"
+  ${EndIf}
+  ${NSD_GetState} $RimeModeWb $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $InputMode "wb"
+  ${EndIf}
+  ${NSD_GetState} $RimeModeHs $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $InputMode "hs"
+  ${EndIf}
+  ${NSD_GetState} $RimeWordAssoc $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $WordAssoc "1"
+  ${Else}
+    StrCpy $WordAssoc "0"
+  ${EndIf}
+FunctionEnd
+
 Function .onInit
+  ; Feature defaults; the command line overrides them. Option names are
+  ; case-insensitive (/WB, /wb, /Wb are all accepted). /S is handled by NSIS.
+  StrCpy $InputMode "hs"
+  StrCpy $WordAssoc "1"
+  ${GetParameters} $R0
+  ClearErrors
+  ${GetOptions} $R0 "/PY" $R1
+  IfErrors +2 0
+  StrCpy $InputMode "py"
+  ${GetOptions} $R0 "/WB" $R1
+  IfErrors +2 0
+  StrCpy $InputMode "wb"
+  ${GetOptions} $R0 "/HS" $R1
+  IfErrors +2 0
+  StrCpy $InputMode "hs"
+  ${GetOptions} $R0 "/ASS1" $R1
+  IfErrors +2 0
+  StrCpy $WordAssoc "1"
+  ${GetOptions} $R0 "/ASS0" $R1
+  IfErrors +2 0
+  StrCpy $WordAssoc "0"
+  ${GetOptions} $R0 "/NOASS" $R1
+  IfErrors +2 0
+  StrCpy $WordAssoc "0"
+
   ; Silent install keeps the default user directory and skips the page.
   ${IfNot} ${Silent}
     ExpandEnvStrings $RimeUserDir "%APPDATA%\Rime"
@@ -319,6 +408,10 @@ program_files:
   ${If} $RimeUserDir != ""
     WriteRegStr HKCU "Software\Rime\Weasel" "RimeUserDir" "$RimeUserDir"
   ${EndIf}
+
+  ; Write the feature selection for the deployer to consume.
+  WriteRegStr HKCU "Software\Rime\Weasel" "InputMode" "$InputMode"
+  WriteRegStr HKCU "Software\Rime\Weasel" "WordAssoc" "$WordAssoc"
 
   ; Install the language profile silently; no interactive prompt.
   ExecWait '"$INSTDIR\WeaselSetup.exe" /i'
