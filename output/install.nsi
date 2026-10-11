@@ -106,19 +106,20 @@ LangString SYSTEMVERSIONNOTOK ${LANG_ENGLISH} "Your system not supported, minimi
 ; User data directory page
 
 Function RimeUserDirPage
+  !insertmacro MUI_HEADER_TEXT "选择 Rime 用户目录" "用于保存用户词典与个人配置。"
   nsDialogs::Create 1018
   Pop $RimeUserDirDialog
   ${If} $RimeUserDirDialog == error
     Abort
   ${EndIf}
 
-  ${NSD_CreateLabel} 0 0 100% 24u "选择 Rime 用户目录，用于保存用户词典与个人配置。留空则使用默认目录。"
+  ${NSD_CreateGroupBox} 0 0 100% 44u "Rime 用户目录"
   Pop $0
 
-  ${NSD_CreateText} 0 28u 80% 13u "$RimeUserDir"
+  ${NSD_CreateText} 6% 14u 68% 12u "$RimeUserDir"
   Pop $RimeUserDirText
 
-  ${NSD_CreateButton} 81% 28u 19% 13u "浏览…"
+  ${NSD_CreateButton} 76% 14u 18% 12u "浏览…"
   Pop $0
   ${NSD_OnClick} $0 RimeUserDirBrowse
 
