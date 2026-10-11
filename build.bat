@@ -293,7 +293,7 @@ rem ---------------------------------------------------------------------------
   set rime_dir=output/data
   set WSLENV=plum_dir:rime_dir
   rem oh-my-rime needs its "full" recipe, which also installs dicts/ and lua/
-  if not defined WEASEL_BUNDLED_RECIPES set WEASEL_BUNDLED_RECIPES=prelude Mintimate/oh-my-rime:full
+  if not defined WEASEL_BUNDLED_RECIPES set WEASEL_BUNDLED_RECIPES=prelude Mintimate/oh-my-rime:plum/full
   bash plum/rime-install %WEASEL_BUNDLED_RECIPES%
   if errorlevel 1 goto error
   rem the recipe does not always copy the sub-directories; take them from the clone
