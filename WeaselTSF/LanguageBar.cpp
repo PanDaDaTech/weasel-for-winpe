@@ -363,11 +363,6 @@ HWND WeaselTSF::_GetFocusedContextWindow() {
 }
 
 BOOL WeaselTSF::_InitLanguageBar() {
-  // The WinPE shell cannot render the custom language-bar icons, so skip the
-  // button there; on a normal system it is shown as usual.
-  if (IsWindowsPE())
-    return TRUE;
-
   com_ptr<ITfLangBarItemMgr> pLangBarItemMgr;
   BOOL fRet = FALSE;
 
@@ -383,7 +378,9 @@ BOOL WeaselTSF::_InitLanguageBar() {
     return FALSE;
   }
 
-  _pLangBarButton->Show(TRUE);
+  // The WinPE shell cannot render the custom icons; keep the button
+  // registered (TSF expects it) but hidden there.
+  _pLangBarButton->Show(IsWindowsPE() ? FALSE : TRUE);
   fRet = TRUE;
 
   return fRet;
