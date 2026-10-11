@@ -300,6 +300,7 @@ rem ---------------------------------------------------------------------------
   set oh_my_rime=%WEASEL_ROOT%\plum\package\Mintimate\oh-my-rime
   if exist "%oh_my_rime%\dicts" xcopy /e /i /y /q "%oh_my_rime%\dicts" "output\data\dicts" >nul
   if exist "%oh_my_rime%\lua" xcopy /e /i /y /q "%oh_my_rime%\lua" "output\data\lua" >nul
+  if exist "%oh_my_rime%\rime.lua" copy /y "%oh_my_rime%\rime.lua" output\data\rime.lua >nul
   rem rime-ice ships its own weasel.yaml; keep ours (single Win11 theme)
   copy /y "%WEASEL_ROOT%\resource\weasel.yaml" output\data\weasel.yaml >nul
   exit /b
